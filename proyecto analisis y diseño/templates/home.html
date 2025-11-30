@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AduanaTech</title>
+</head>
+<body>
+    <h1>Bienvenido a AduanaTech</h1>
+    {% if user.is_authenticated %}
+        <p>Hola, <strong>{{ user.username }}</strong>.</p>
+        <a href="{% url 'logout' %}">Cerrar Sesión</a>
+    {% else %}
+        <p>No has iniciado sesión.</p>
+        <a href="{% url 'login' %}">Ingresar</a> | 
+        <a href="{% url 'registro' %}">Registrarse</a>
+    {% endif %}
+</body>
+</html>
