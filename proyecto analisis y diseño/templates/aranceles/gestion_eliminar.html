@@ -1,0 +1,29 @@
+{% load static %}
+<h2>🗑️ Eliminar Arancel</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Buscar Código</button>
+</form>
+
+{% if arancel %}
+    <div style="background: #fdedec; padding: 20px; border: 1px solid red; margin-top: 20px;">
+        <h3>⚠️ ¿Estás seguro?</h3>
+        <p>Vas a eliminar el siguiente arancel:</p>
+        <ul>
+            <li><strong>Código:</strong> {{ arancel.codigo }}</li>
+            <li><strong>Descripción:</strong> {{ arancel.descripcion }}</li>
+        </ul>
+        
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="pk_eliminar" value="{{ arancel.pk }}">
+            <button type="submit" name="confirmar_eliminar" style="background: red; color: white;">
+                SÍ, ELIMINAR DEFINITIVAMENTE
+            </button>
+        </form>
+    </div>
+{% endif %}
+<br>
+<a href="{% url 'menu_gestion' %}">Cancelar</a>

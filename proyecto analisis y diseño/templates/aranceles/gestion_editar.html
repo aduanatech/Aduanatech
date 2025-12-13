@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editando Arancel</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body>
+    <div style="width: 50%; margin: 40px auto; padding: 20px; border: 1px solid #ccc;">
+        <h2>✏️ Editando: {{ arancel.codigo }}</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            
+            <div style="margin-top: 20px;">
+                <button type="submit" style="background-color: #27ae60; color: white; padding: 10px 20px; border: none; cursor: pointer;">
+                    💾 Guardar Cambios
+                </button>
+                <a href="{% url 'menu_gestion' %}" style="margin-left: 20px; color: red;">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Partida {{ arancel.codigo }} - AduanaTech</title>
+    <style>
+        body { font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6f9; color: #333; margin: 0; }
+        .container { width: 90%; max-width: 1000px; margin: 0 auto; padding-top: 30px; padding-bottom: 50px; }
+        
+        /* Encabezado */
+        .header-detalle {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 6px solid #3498db;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        .header-detalle h1 { margin: 0; color: #2c3e50; font-size: 28px; }
+        .header-detalle p { font-size: 16px; color: #555; margin-top: 10px; line-height: 1.5; }
+
+        /* Tablas de Información */
+        .info-section { margin-bottom: 30px; }
+        .info-title { font-size: 18px; color: #34495e; border-bottom: 2px solid #bdc3c7; padding-bottom: 5px; margin-bottom: 15px; font-weight: bold; }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .info-table th { background-color: #f1f2f6; text-align: left; padding: 12px 15px; color: #555; width: 30%; border-bottom: 1px solid #e1e4e8; }
+        .info-table td { padding: 12px 15px; border-bottom: 1px solid #e1e4e8; color: #2c3e50; font-weight: 500; }
+        .info-table tr:last-child td, .info-table tr:last-child th { border-bottom: none; }
+
+        /* Nota Explicativa (Estilo destacado) */
+        .nota-box {
+            background-color: #fff; 
+            padding: 30px; 
+            border-left: 6px solid #e67e22; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            margin-top: 40px;
+        }
+        .nota-box h3 { color: #d35400; margin-top: 0; font-size: 22px; display: flex; align-items: center; gap: 10px; }
+        .nota-content { font-family: 'Georgia', serif; line-height: 1.7; color: #444; white-space: pre-wrap; font-size: 15px; }
+        .nota-footer { font-size: 12px; color: #999; margin-top: 20px; font-style: italic; border-top: 1px solid #eee; padding-top: 10px;}
+
+        /* Botón Volver */
+        .btn-volver {
+            display: inline-block;
+            background-color: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn-volver:hover { background-color: #7f8c8d; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div class="header-detalle">
+        <h1>Partida: {{ arancel.codigo }}</h1>
+        <p>{{ arancel.descripcion }}</p>
+    </div>
+
+    <div class="info-section">
+        <div class="info-title">📊 Tributos y Regulaciones</div>
+        <table class="info-table">
+            <tr>
+                <th>Gravamen Arancelario (GA)</th>
+                <td style="color: #c0392b; font-weight: bold;">{{ arancel.gravamen|floatformat:0 }}%</td>
+            </tr>
+            <tr>
+                <th>Impuesto ICE / IEHD</th>
+                <td>{{ arancel.ice_iehd|default:"-" }}</td>
+            </tr>
+            <tr>
+                <th>Unidad de Medida</th>
+                <td>{{ arancel.unidad_medida|default:"-" }}</td>
+            </tr>
+            <tr>
+                <th>Despacho en Frontera</th>
+                <td>{% if arancel.despacho_frontera %}Sí{% else %}No{% endif %}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="info-section">
+        <div class="info-title">📄 Documentos Soporte</div>
+        <table class="info-table">
+            <tr>
+                <th>Tipo de Documento</th>
+                <td>{{ arancel.tipo_doc|default:"-" }}</td>
+            </tr>
+            <tr>
+                <th>Entidad Emisora</th>
+                <td>{{ arancel.entidad_emite|default:"-" }}</td>
+            </tr>
+            <tr>
+                <th>Disposición Legal</th>
+                <td>{{ arancel.disp_legal|default:"-" }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="info-section">
+        <div class="info-title">🌍 Preferencias Arancelarias (100%)</div>
+        <table class="info-table">
+            <tr>
+                <th>CAN / ACE 36 / ACE 47 / VEN</th>
+                <td>{{ arancel.pref_can_ace|default:"-" }}</td>
+            </tr>
+            <tr>
+                <th>ACE 22 (Chile)</th>
+                <td>{{ arancel.pref_ace22_chi|default:"-" }}</td>
+            </tr>
+            <tr>
+                <th>ACE 22 (Protocolo)</th>
+                <td>{{ arancel.pref_ace22_prot|default:"-" }}</td>
+            </tr>
+            <tr>
+                <th>ACE 66 (México)</th>
+                <td>{{ arancel.pref_ace66_mexico|default:"-" }}</td>
+            </tr>
+        </table>
+    </div>
+
+    {% if arancel.nota_explicativa %}
+        <div class="nota-box">
+            <h3>📖 Nota Explicativa Oficial</h3>
+            
+            <div class="nota-content">
+                {{ arancel.nota_explicativa }}
+            </div>
+            
+            <p class="nota-footer">
+                * Fuente: Notas Explicativas del Sistema Armonizado (OMA). Únicamente referencial.
+            </p>
+        </div>
+    {% endif %}
+
+    <br><br>
+    
+    <a href="{% url 'buscar_arancel' %}" class="btn-volver">⬅ Volver a la Búsqueda</a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>AduanaTech - Inicio</title>
+    <style>
+        body { font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 40px auto; text-align: center; }
+        
+        /* Paneles */
+        .panel-admin { background-color: #e8f8f5; border: 2px solid #2ecc71; padding: 25px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .panel-usuario { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-top: 5px solid #3498db; }
+        
+        /* Títulos */
+        h1 { color: #2c3e50; margin-bottom: 30px; }
+        h3 { margin-top: 0; color: #34495e; }
+        
+        /* Botones */
+        .btn-main { 
+            display: inline-block; margin: 10px; padding: 12px 25px; 
+            color: white; text-decoration: none; border-radius: 50px; 
+            font-weight: bold; transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); opacity: 0.9; }
+        
+        /* Botón Logout */
+        .btn-logout { background: none; border: none; color: #7f8c8d; text-decoration: underline; cursor: pointer; font-size: 14px; margin-top: 30px; }
+        .btn-logout:hover { color: #c0392b; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>📦 Bienvenido a AduanaTech</h1>
+
+        {% if user.is_authenticated %}
+            <p style="font-size: 1.2em; margin-bottom: 30px;">Hola, <strong>{{ user.username }}</strong>.</p>
+
+            {% if user.is_staff %}
+                <div class="panel-admin">
+                    <h3>👑 Panel de Gestión (Solo Admin)</h3>
+                    <p>Tienes permisos para gestionar cuentas, roles y aranceles.</p>
+                    
+                    <a href="{% url 'lista_usuarios' %}" class="btn-main" style="background-color: #27ae60;">
+                        👥 Gestionar Usuarios
+                    </a>
+                
+                    <a href="{% url 'menu_gestion' %}" class="btn-main" style="background-color: #8e44ad;">
+                        ⚙️ Gestionar Aranceles
+                    </a>
+
+                    <a href="{% url 'listar_reportes_admin' %}" class="btn-main" style="background-color: #3498db;">
+                        📨 historial de auditoria
+                    </a>
+                </div>
+            {% endif %}
+
+            <div class="panel-usuario">
+                <h3>Servicios Disponibles</h3>
+                <p>¿Qué deseas hacer hoy?</p>
+                
+                <a href="{% url 'buscar_arancel' %}" class="btn-main" style="background-color: #2980b9;">
+                    🔍 Consultar Arancel
+                </a>
+
+                <br>
+                <a href="{% url 'crear_reporte_error' %}" class="btn-main" style="background-color: #e74c3c;">
+                    📢 Generar reportes
+                </a>
+
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout">
+                        Cerrar Sesión
+                    </button>
+                </form>
+            </div>
+
+        {% else %}
+            <div class="panel-usuario">
+                <p>Por favor, inicia sesión para acceder al sistema.</p>
+                <br>
+                <a href="{% url 'login' %}" class="btn-main" style="background-color: #34495e;">🔐 Ingresar al Sistema</a>
+            </div>
+        {% endif %}
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Helvetica, sans-serif; font-size: 12px; }
+        h1 { color: #2c3e50; text-align: center; }
+        .info { margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #000; padding: 6px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .gravamen { text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Reporte de Aranceles - AduanaTech</h1>
+    
+    <div class="info">
+        <p><strong>Criterio de búsqueda:</strong> {{ query }}</p>
+        <p><strong>Fecha de reporte:</strong> {% now "d/m/Y H:i" %}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 20%;">Código</th>
+                <th style="width: 60%;">Descripción</th>
+                <th style="width: 20%;">Gravamen (GA)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in resultados %}
+            <tr>
+                <td>{{ item.codigo }}</td>
+                <td>{{ item.descripcion }}</td>
+                <td class="gravamen">{{ item.gravamen }}%</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" style="text-align:center;">No hay datos para mostrar</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

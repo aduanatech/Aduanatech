@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gestión de Aranceles</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <style>
+        /* Contenedor flexible que permite que los botones bajen si no caben */
+        .menu-grid { 
+            display: flex; 
+            gap: 20px; 
+            justify-content: center; 
+            flex-wrap: wrap; /* Esto hace la magia para que se ordenen en cuadrícula */
+            max-width: 900px; /* Limitamos el ancho para que queden centrados */
+            margin: 40px auto; 
+        }
+        
+        .card { 
+            border: 1px solid #ddd; 
+            padding: 30px; 
+            border-radius: 10px; 
+            text-align: center; 
+            width: 180px; /* Un poco más angostos para que quepan bien */
+            cursor: pointer; 
+            transition: 0.3s; 
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            height: 140px; /* Altura fija para que todos sean iguales */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+        .icon { font-size: 35px; display: block; margin-bottom: 10px; }
+        
+        /* Colores específicos para cada acción */
+        .btn-crear { border-top: 5px solid #2ecc71; }
+        .btn-crear:hover { background-color: #e8f8f5; }
+
+        .btn-modificar { border-top: 5px solid #f1c40f; }
+        .btn-modificar:hover { background-color: #fcf3cf; }
+
+        .btn-actualizar { border-top: 5px solid #3498db; }
+        .btn-actualizar:hover { background-color: #ebf5fb; }
+
+        .btn-eliminar { border-top: 5px solid #e74c3c; }
+        .btn-eliminar:hover { background-color: #fdedec; }
+
+        h3 { margin: 10px 0 5px 0; font-size: 18px; color: #333; }
+        p { font-size: 13px; color: #777; margin: 0; }
+        a { text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div style="text-align: center; margin-top: 40px;">
+        <h1>⚙️ Gestión de Aranceles</h1>
+        <p>Selecciona una acción para administrar la base de datos:</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div style="margin: 10px auto; padding: 10px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; width: 50%; border-radius: 5px;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="menu-grid">
+            <a href="{% url 'crear_arancel' %}">
+                <div class="card btn-crear">
+                    <span class="icon">➕</span>
+                    <h3>Crear</h3>
+                    <p>Agregar manualmente</p>
+                </div>
+            </a>
+
+            <a href="{% url 'buscar_para_editar' %}">
+                <div class="card btn-modificar">
+                    <span class="icon">✏️</span>
+                    <h3>Modificar</h3>
+                    <p>Corregir errores</p>
+                </div>
+            </a>
+
+            <a href="{% url 'actualizar_masivo' %}">
+                <div class="card btn-actualizar">
+                    <span class="icon">📂</span>
+                    <h3>Actualizar</h3>
+                    <p>Importar Excel/CSV</p>
+                </div>
+            </a>
+
+            <a href="{% url 'eliminar_arancel' %}">
+                <div class="card btn-eliminar">
+                    <span class="icon">🗑️</span>
+                    <h3>Eliminar</h3>
+                    <p>Borrar por código</p>
+                </div>
+            </a>
+        </div>
+        
+        <br><br>
+        <a href="{% url 'home' %}" style="color: #555; font-weight: bold;">⬅ Volver al Inicio</a>
+    </div>
+</body>
+</html>

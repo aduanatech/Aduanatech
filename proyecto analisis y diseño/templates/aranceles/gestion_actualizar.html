@@ -1,0 +1,11 @@
+{% load static %}
+<h2>📂 Actualizar Aranceles (Carga Masiva)</h2>
+<p>Formatos soportados: <strong>.xlsx</strong> (Excel) y <strong>.csv</strong></p>
+<p>Columnas requeridas: CODIGO, DESCRIPCION, GRAVAMEN</p>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">⬆ Procesar Archivo</button>
+</form>
+<a href="{% url 'menu_gestion' %}">Cancelar</a>

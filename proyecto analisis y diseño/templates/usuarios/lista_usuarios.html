@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gestión de Usuarios</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <style>
+        .tabla-users { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .tabla-users th, .tabla-users td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        .rol-admin { color: green; font-weight: bold; }
+        .rol-user { color: blue; }
+        .btn-mini { padding: 5px 10px; text-decoration: none; font-size: 12px; border-radius: 3px; color: white;}
+        .btn-crear { background-color: #27ae60; padding: 10px 20px; color: white; text-decoration: none; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div style="width: 80%; margin: 20px auto;">
+        <h1>👥 Gestión de Usuarios y Roles</h1>
+        
+        <div style="margin-bottom: 20px;">
+            <a href="{% url 'crear_usuario_admin' %}" class="btn-crear">+ Crear Nuevo Usuario</a>
+            <a href="{% url 'home' %}" style="float: right;">Volver al Inicio</a>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div style="padding: 10px; background: #f1f1f1; margin-bottom: 10px;">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <table class="tabla-users">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Email</th>
+                    <th>Rol Actual</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>{{ u.username }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>
+                        {% if u.is_staff %}
+                            <span class="rol-admin">ADMINISTRADOR</span>
+                        {% else %}
+                            <span class="rol-user">DESPACHANTE</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if u != request.user %}
+                            {% if u.is_staff %}
+                                <a href="{% url 'cambiar_rol' u.id %}" class="btn-mini" style="background: orange;">⬇ Volver Despachante</a>
+                            {% else %}
+                                <a href="{% url 'cambiar_rol' u.id %}" class="btn-mini" style="background: blue;">⬆ Ascender a Admin</a>
+                            {% endif %}
+                            
+                            <a href="{% url 'eliminar_usuario' u.id %}" class="btn-mini" style="background: red;" onclick="return confirm('¿Seguro de eliminar a {{ u.username }}?')">Eliminar</a>
+                        {% else %}
+                            <small>(Eres tú)</small>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

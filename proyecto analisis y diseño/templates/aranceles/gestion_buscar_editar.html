@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Modificar Arancel</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body>
+    <div style="width: 400px; margin: 50px auto; padding: 30px; border: 1px solid #f39c12; border-radius: 10px; text-align: center;">
+        <h2 style="color: #f39c12;">✏️ Modificar Arancel</h2>
+        <p>Introduce el código exacto que deseas corregir.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" style="background-color: #f39c12; color: white; border: none; padding: 10px 20px; cursor: pointer;">
+                Buscar para Editar
+            </button>
+        </form>
+        
+        <br>
+        <a href="{% url 'menu_gestion' %}">Cancelar</a>
+    </div>
+</body>
+</html>

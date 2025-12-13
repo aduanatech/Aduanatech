@@ -1,0 +1,8 @@
+{% load static %}
+<h2>➕ Crear Nuevo Arancel</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Guardar Arancel</button>
+</form>
+<a href="{% url 'menu_gestion' %}">Cancelar</a>

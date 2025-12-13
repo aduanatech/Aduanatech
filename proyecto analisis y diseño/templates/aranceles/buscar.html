@@ -1,0 +1,223 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar Arancel - AduanaTech</title>
+    <style>
+        body { font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6f9; color: #333; }
+        .container { width: 95%; max-width: 1400px; margin: 0 auto; padding-top: 20px; padding-bottom: 40px; }
+        
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; }
+        
+        .search-box {
+            background: #fff; padding: 20px; border-radius: 8px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e1e4e8;
+        }
+
+        .tabla-contenedor {
+            overflow-x: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            border: 1px solid #bdc3c7;
+        }
+
+        .tabla-resultados { 
+            width: 100%; 
+            border-collapse: collapse; 
+            background-color: white; 
+            font-family: "Arial Narrow", sans-serif; 
+            font-size: 13px;
+            min-width: 1200px; 
+        }
+        
+        .tabla-resultados th { 
+            background-color: #2c3e50; 
+            color: white; 
+            border: 1px solid #34495e; 
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+
+        .tabla-resultados th.sub-header {
+            background-color: #34495e;
+            font-size: 11px;
+            padding: 5px;
+        }
+
+        .tabla-resultados td { 
+            border: 1px solid #bdc3c7; 
+            padding: 6px 8px; 
+            vertical-align: top;
+            color: #2c3e50;
+        }
+
+        .tabla-resultados tbody tr:nth-child(even) { background-color: #f8f9fa; }
+        .tabla-resultados tbody tr:hover { background-color: #e8f4f8; }
+
+        .col-codigo { font-weight: bold; text-align: center; white-space: nowrap; }
+        
+        .col-descripcion {
+            white-space: pre-wrap; 
+            text-align: left;
+            font-family: "Courier New", Courier, monospace; 
+            font-size: 12px;
+            min-width: 300px;
+        }
+
+        .col-centro { text-align: center; }
+        .col-negrita { font-weight: bold; }
+        .small-text { font-size: 11px; }
+
+        .btn { padding: 8px 16px; text-decoration: none; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 14px; font-weight: 500; transition: background 0.2s; gap: 5px;}
+        .btn-buscar { background-color: #3498db; color: white; }
+        .btn-pdf { background-color: #e74c3c; color: white; }
+        .btn-png { background-color: #27ae60; color: white; }
+        .btn-volver { background-color: #95a5a6; color: white; margin-top: 20px; }
+
+        .acciones-exportar { 
+            background-color: #fff; padding: 15px; border: 1px solid #ddd; 
+            margin-top: 20px; border-radius: 5px; display: flex; align-items: center; gap: 15px;
+        }
+
+        .form-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .form-row select, .form-row input { padding: 8px; border: 1px solid #bdc3c7; border-radius: 4px; }
+        .form-row input { flex-grow: 1; min-width: 200px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>📋 Consultar Arancel de Aduanas</h2>
+
+    <div class="search-box">
+        <form method="get" action="">
+            <div class="form-row">
+                {{ form.tipo_busqueda }}
+                {{ form.query }}
+                <button type="submit" class="btn btn-buscar">🔍 Buscar</button>
+            </div>
+        </form>
+    </div>
+
+    {% if mensaje %}
+        <div style="background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; border: 1px solid #ffeeba; margin-bottom: 20px;">
+            ⚠ {{ mensaje }}
+        </div>
+    {% endif %}
+
+    {% if resultados %}
+        <div style="margin-bottom: 10px; font-weight: bold; color: #555;">
+            Resultados encontrados: {{ resultados|length }}
+        </div>
+        
+        <div class="tabla-contenedor">
+            <table class="tabla-resultados" id="tablaParaExportar">
+                <thead>
+                    <tr>
+                        <th rowspan="2" style="width: 8%;">CÓDIGO</th>
+                        <th rowspan="2" style="width: 25%;">DESCRIPCIÓN DE LA MERCANCÍA</th>
+                        <th rowspan="2" style="width: 5%;">GA %</th>
+                        <th rowspan="2" style="width: 5%;">ICE IEHD</th>
+                        <th rowspan="2" style="width: 5%;">Unidad<br>Medida</th>
+                        <th rowspan="2" style="width: 5%;">Despacho<br>Frontera</th>
+                        
+                        <th colspan="3">Documento Adicional para el Despacho Aduanero</th>
+                        
+                        <th colspan="4">Preferencias Arancelarias (100%)</th>
+                    </tr>
+
+                    <tr>
+                        <th class="sub-header">Tipo Doc</th>
+                        <th class="sub-header">Entidad Emisora</th>
+                        <th class="sub-header">Disp. Legal</th>
+
+                        <th class="sub-header">CAN<br>ACE 36/47</th>
+                        <th class="sub-header">ACE 22<br>(Chi)</th>
+                        <th class="sub-header">ACE 22<br>(Prot)</th>
+                        <th class="sub-header">ACE 66<br>MEX</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in resultados %}
+                    <tr>
+                        <td class="col-codigo">
+                            <a href="{% url 'detalle_arancel' item.pk %}" style="color: #3498db; text-decoration: none; font-weight: bold;">
+                                {{ item.codigo|default:"-" }}
+                            </a> 
+                        </td>
+                        
+                        <td class="col-descripcion">{{ item.descripcion|default:"-" }}</td>
+                        
+                        <td class="col-centro col-negrita">
+                            {% if item.gravamen is not None %}
+                                {{ item.gravamen|floatformat:0 }}%
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        
+                        <td class="col-centro">{{ item.ice_iehd|default:"-" }}</td>
+                        <td class="col-centro">{{ item.unidad_medida|default:"-" }}</td>
+                        
+                        <td class="col-centro">
+                            {% if item.despacho_frontera %}Sí{% else %}-{% endif %}
+                        </td>
+                        
+                        <td class="col-centro small-text">{{ item.tipo_doc|default:"-" }}</td>
+                        <td class="col-centro small-text">{{ item.entidad_emite|default:"-" }}</td>
+                        <td class="col-centro small-text">{{ item.disp_legal|default:"-" }}</td>
+
+                        <td class="col-centro">{{ item.pref_can_ace|default:"-" }}</td>
+                        <td class="col-centro">{{ item.pref_ace22_chi|default:"-" }}</td>
+                        <td class="col-centro">{{ item.pref_ace22_prot|default:"-" }}</td>
+                        <td class="col-centro">{{ item.pref_ace66_mexico|default:"-" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="13" style="text-align: center; padding: 20px;">
+                            No se encontraron datos disponibles.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="acciones-exportar">
+            <span style="font-weight: bold; margin-right: 10px;">📂 Exportar:</span>
+            <a href="{% url 'exportar_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-pdf" target="_blank">
+                📄 PDF
+            </a>
+            <button onclick="descargarPNG()" class="btn btn-png">
+                📷 Imagen (PNG)
+            </button>
+        </div>
+    {% endif %}
+
+    <a href="{% url 'home' %}" class="btn btn-volver">⬅ Volver al Inicio</a>
+</div>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script>
+    function descargarPNG() {
+        const tabla = document.getElementById("tablaParaExportar");
+        
+        if (tabla) {
+            html2canvas(tabla, { backgroundColor: "#ffffff" }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'arancel_resultado.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        } else {
+            alert("No hay datos para exportar.");
+        }
+    }
+</script>
+
+</body>
+</html>
